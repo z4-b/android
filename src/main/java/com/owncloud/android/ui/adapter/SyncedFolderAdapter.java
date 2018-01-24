@@ -1,4 +1,4 @@
-/**
+/*
  *   Nextcloud Android client application
  *
  * @author Andy Scherzinger
@@ -22,7 +22,6 @@
 package com.owncloud.android.ui.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.sectionedrecyclerview.SectionedRecyclerViewAdapter;
+import com.afollestad.sectionedrecyclerview.SectionedViewHolder;
 import com.owncloud.android.R;
 import com.owncloud.android.datamodel.MediaFolderType;
 import com.owncloud.android.datamodel.SyncedFolderDisplayItem;
@@ -105,7 +105,7 @@ public class SyncedFolderAdapter extends SectionedRecyclerViewAdapter<SyncedFold
     }
 
     @Override
-    public void onBindHeaderViewHolder(final MainViewHolder holder, final int section) {
+    public void onBindHeaderViewHolder(final MainViewHolder holder, final int section, boolean expanded) {
         holder.mainHeaderContainer.setVisibility(View.VISIBLE);
 
         holder.title.setText(mSyncFolderItems.get(section).getFolderName());
@@ -144,6 +144,11 @@ public class SyncedFolderAdapter extends SectionedRecyclerViewAdapter<SyncedFold
             holder.menuButton.setOnClickListener(v -> mListener.onSyncFolderSettingsClick(section,
                     mSyncFolderItems.get(section)));
         }
+    }
+
+    @Override
+    public void onBindFooterViewHolder(MainViewHolder holder, int section) {
+
     }
 
 
@@ -194,7 +199,7 @@ public class SyncedFolderAdapter extends SectionedRecyclerViewAdapter<SyncedFold
         void onSyncFolderSettingsClick(int section, SyncedFolderDisplayItem syncedFolderDisplayItem);
     }
 
-    static class MainViewHolder extends RecyclerView.ViewHolder {
+    static class MainViewHolder extends SectionedViewHolder {
         private final ImageView image;
         private final TextView title;
         private final ImageView type;
@@ -208,15 +213,15 @@ public class SyncedFolderAdapter extends SectionedRecyclerViewAdapter<SyncedFold
 
         private MainViewHolder(View itemView) {
             super(itemView);
-            mainHeaderContainer = (RelativeLayout) itemView.findViewById(R.id.header_container);
-            image = (ImageView) itemView.findViewById(R.id.thumbnail);
-            title = (TextView) itemView.findViewById(R.id.title);
-            type = (ImageView) itemView.findViewById(R.id.type);
-            menuButton = (ImageButton) itemView.findViewById(R.id.settingsButton);
-            syncStatusButton = (ImageButton) itemView.findViewById(R.id.syncStatusButton);
-            counterBar = (LinearLayout) itemView.findViewById(R.id.counterLayout);
-            counterValue = (TextView) itemView.findViewById(R.id.counter);
-            thumbnailDarkener = (ImageView) itemView.findViewById(R.id.thumbnailDarkener);
+            mainHeaderContainer = itemView.findViewById(R.id.header_container);
+            image = itemView.findViewById(R.id.thumbnail);
+            title = itemView.findViewById(R.id.title);
+            type = itemView.findViewById(R.id.type);
+            menuButton = itemView.findViewById(R.id.settingsButton);
+            syncStatusButton = itemView.findViewById(R.id.syncStatusButton);
+            counterBar = itemView.findViewById(R.id.counterLayout);
+            counterValue = itemView.findViewById(R.id.counter);
+            thumbnailDarkener = itemView.findViewById(R.id.thumbnailDarkener);
         }
     }
 

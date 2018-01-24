@@ -419,7 +419,7 @@
     <string name="manage_space_title">Hallitse tilaa</string>
     <string name="manage_space_clear_data">Tyhjennä tiedot</string>
 
-    <string name="local_file_not_found_toast">Tiedostoa ei löytynyt paikallisesta tiedostojärjestelmästä</string>
+    <string name="local_file_not_found_message">Tiedostoa ei löytynyt paikallisesta tiedostojärjestelmästä</string>
     <string name="confirmation_remove_files_alert">Haluatko varmasti poistaa valitut kohteet?</string>
     <string name="confirmation_remove_folders_alert">Haluatko varmasti poistaa valitut kohteet ja niiden sisällön?</string>
     <string name="maintenance_mode">Palvelin on huoltotilassa</string>
