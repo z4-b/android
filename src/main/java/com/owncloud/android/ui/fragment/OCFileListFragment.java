@@ -228,7 +228,7 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
                     // Almost reached the end, continue to load new activities
                     Log_OC.d("SCROLL", "load next");
 
-                    if (remoteOperationAsyncTask != null && remoteOperationAsyncTask.getStatus() != AsyncTask.Status.RUNNING && (totalItemCount - visibleItemCount) > 0) {
+                    if ((totalItemCount - visibleItemCount) > 0) {
                         photoSearch();
                     }
                 }
