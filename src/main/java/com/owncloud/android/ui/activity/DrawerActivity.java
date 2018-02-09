@@ -429,7 +429,7 @@ public abstract class DrawerActivity extends ToolbarActivity implements DisplayU
                         SearchEvent.UnsetType.NO_UNSET), menuItem);
                 break;
             case R.id.nav_photos:
-                switchToSearchFragment(new SearchEvent("image/%", SearchOperation.SearchType.CONTENT_TYPE_SEARCH,
+                switchToSearchFragment(new SearchEvent("image/%", SearchOperation.SearchType.PHOTO_SEARCH,
                         SearchEvent.UnsetType.NO_UNSET), menuItem);
                 break;
             case R.id.nav_on_device:
