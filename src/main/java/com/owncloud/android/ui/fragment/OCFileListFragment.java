@@ -176,6 +176,7 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
     private AbsListView.OnScrollListener onScrollChangeListener;
     private boolean photoSearchQueryRunning;
     private boolean photoSearchNoNew = false;
+    private RemoteOperation remoteOperation;
 
     private enum MenuItemAddRemove {
         DO_NOTHING, REMOVE_SORT, REMOVE_GRID_AND_SORT, ADD_SORT, ADD_GRID_AND_SORT, ADD_GRID_AND_SORT_WITH_SEARCH,
@@ -229,7 +230,7 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
                     Log_OC.d("SCROLL", "load next");
 
                     if ((totalItemCount - visibleItemCount) > 0) {
-                        photoSearch();
+                        search();
                     }
                 }
             }
@@ -1490,7 +1491,6 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(final SearchEvent event, boolean clear) {
 
-        getListView().setOnScrollListener(onScrollChangeListener);
 
         searchFragment = true;
         setEmptyListLoadingMessage();
@@ -1545,99 +1545,33 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
             new Handler(Looper.getMainLooper()).post(switchViewsRunnable);
         }
 
-        final RemoteOperation remoteOperation;
         if (!currentSearchType.equals(SearchType.SHARED_FILTER)) {
             boolean searchOnlyFolders = false;
             if (getArguments() != null && getArguments().getBoolean(ARG_SEARCH_ONLY_FOLDER, false)) {
                 searchOnlyFolders = true;
             }
 
-
             remoteOperation = new SearchOperation(event.getSearchQuery(), event.getSearchType(), searchOnlyFolders);
         } else {
             remoteOperation = new GetRemoteSharesOperation();
         }
 
-        final Account currentAccount = AccountUtils.getCurrentOwnCloudAccount(MainApp.getAppContext());
+        search();
 
-        remoteOperationAsyncTask = new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] params) {
-                if (getContext() != null && !isCancelled()) {
-
-                    int limit = -1;
-                    if (currentSearchType.equals(SearchType.PHOTO_SEARCH)) {
-                        limit = 15 * getColumnSize();
-                    }
-
-                    long timestamp = -1;
-                    if (mAdapter.getLastTimestamp() > 0) {
-                        timestamp = mAdapter.getLastTimestamp();
-                    }
-
-                    if (remoteOperation instanceof SearchOperation) {
-                        SearchOperation searchOperation = (SearchOperation) remoteOperation;
-                        searchOperation.setLimit(limit);
-                        searchOperation.setTimestamp(timestamp);
-                    }
-
-                    RemoteOperationResult remoteOperationResult = remoteOperation.execute(currentAccount, getContext());
-
-                    FileDataStorageManager storageManager = null;
-                    if (mContainerActivity != null && mContainerActivity.getStorageManager() != null) {
-                        storageManager = mContainerActivity.getStorageManager();
-                    }
-
-                    if (remoteOperationResult.isSuccess() && remoteOperationResult.getData() != null
-                            && !isCancelled() && searchFragment) {
-                        if (remoteOperationResult.getData() == null || remoteOperationResult.getData().size() == 0) {
-                            setEmptyView(event);
-                        } else {
-                            mAdapter.setData(remoteOperationResult.getData(), currentSearchType, storageManager, mFile, clear);
-                        }
-
-                        final ToolbarActivity fileDisplayActivity = (ToolbarActivity) getActivity();
-                        if (fileDisplayActivity != null) {
-                            fileDisplayActivity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (fileDisplayActivity != null) {
-                                        fileDisplayActivity.setIndeterminate(false);
-                                    }
-                                }
-                            });
-                        }
-                    }
-
-                    return remoteOperationResult.isSuccess();
-                } else {
-                    return false;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                if (!isCancelled()) {
-                    mAdapter.notifyDataSetChanged();
-                }
-            }
-        };
-
-        remoteOperationAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, true);
+        getListView().setOnScrollListener(onScrollChangeListener);
     }
 
-    private void photoSearch() {
+    // TODO refactor, so that it can be used for every search
+    private void search() {
         if (!photoSearchQueryRunning && !photoSearchNoNew) {
             remoteOperationAsyncTask = new AsyncTask() {
                 @Override
                 protected Object doInBackground(Object[] params) {
                     if (getContext() != null && !isCancelled()) {
                         photoSearchQueryRunning = true;
-                        Log_OC.d("SCROLL", "run photo search");
+                        Log_OC.d("SCROLL", "re-run search");
 
                         final Account currentAccount = AccountUtils.getCurrentOwnCloudAccount(MainApp.getAppContext());
-
-                        SearchOperation searchOperation = new SearchOperation(searchEvent.getSearchQuery(), SearchOperation.SearchType.PHOTO_SEARCH, false);
 
                         int limit = -1;
                         if (currentSearchType.equals(SearchType.PHOTO_SEARCH)) {
@@ -1649,10 +1583,13 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
                             timestamp = mAdapter.getLastTimestamp();
                         }
 
-                        searchOperation.setLimit(limit);
-                        searchOperation.setTimestamp(timestamp);
+                        if (remoteOperation instanceof SearchOperation) {
+                            SearchOperation searchOperation = (SearchOperation) remoteOperation;
+                            searchOperation.setLimit(limit);
+                            searchOperation.setTimestamp(timestamp);
+                        }
 
-                        RemoteOperationResult remoteOperationResult = searchOperation.execute(currentAccount, getContext());
+                        RemoteOperationResult remoteOperationResult = remoteOperation.execute(currentAccount, getContext());
 
                         FileDataStorageManager storageManager = null;
                         if (mContainerActivity != null && mContainerActivity.getStorageManager() != null) {
@@ -1663,6 +1600,8 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
                                 && !isCancelled() && searchFragment) {
                             if (remoteOperationResult.getData() == null || remoteOperationResult.getData().size() == 0) {
                                 photoSearchNoNew = true;
+                                // todo how distinguish to show 
+                                // setEmptyView(event);
                             } else {
                                 mAdapter.setData(remoteOperationResult.getData(), currentSearchType, storageManager, mFile, false);
                             }
