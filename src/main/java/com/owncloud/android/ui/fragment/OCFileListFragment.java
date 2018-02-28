@@ -209,16 +209,6 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 Log_OC.d("SCROLL", getListView().getFirstVisiblePosition() + " / " + mAdapter.getCount());
-//                int visibleItemCount = recyclerView.getChildCount();
-//                int totalItemCount = layoutManager.getItemCount();
-//                int firstVisibleItemIndex = layoutManager.findFirstVisibleItemPosition();
-//
-//                // synchronize loading state when item count changes
-//                if (!isLoadingActivities && (totalItemCount - visibleItemCount) <= (firstVisibleItemIndex + 5)
-//                        && nextPageUrl != null && !nextPageUrl.isEmpty()) {
-//                    // Almost reached the end, continue to load new activities
-//                    fetchAndSetData(nextPageUrl);
-//                }
             }
 
             @Override
@@ -337,6 +327,7 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
         super.onPause();
         mAdapter.cancelAllPendingTasks();
     }
+
 
 
     /**
@@ -575,9 +566,9 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
 
     /**
      * Handler for multiple selection mode.
-     * <p>
+     *
      * Manages input from the user when one or more files or folders are selected in the list.
-     * <p>
+     *
      * Also listens to changes in navigation drawer to hide and recover multiple selection when it's opened
      * and closed.
      */
@@ -837,7 +828,7 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
 
     /**
      * Call this, when the user presses the up button.
-     * <p>
+     *
      * Tries to move up the current folder one level. If the parent folder was removed from the
      * database, it continues browsing up until finding an existing folders.
      * <p/>
@@ -1561,7 +1552,7 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
         getListView().setOnScrollListener(onScrollChangeListener);
     }
 
-    // TODO refactor, so that it can be used for every search
+    // TODO refactor, can only used for photo search atm
     private void search() {
         if (!photoSearchQueryRunning && !photoSearchNoNew) {
             remoteOperationAsyncTask = new AsyncTask() {
