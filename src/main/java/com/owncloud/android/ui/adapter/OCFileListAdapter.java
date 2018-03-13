@@ -87,6 +87,8 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private ArrayList<OCFile> mFilesAll = new ArrayList<>();
     private boolean mJustFolders;
     private boolean mHideItemOptions;
+    private long lastTimestamp;
+    
     private boolean gridView = false;
     private boolean multiSelect = false;
     private HashSet<OCFile> checkedFiles;
@@ -512,18 +514,20 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public void setData(ArrayList<Object> objects, ExtendedListFragment.SearchType searchType,
-                        FileDataStorageManager storageManager, OCFile folder) {
+                        FileDataStorageManager storageManager, OCFile folder, boolean clear) {
         if (storageManager != null && mStorageManager == null) {
             mStorageManager = storageManager;
         }
-        mFiles.clear();
+        if (clear) {
+            mFiles.clear();
+        }
 
         // early exit
         if (objects.size() > 0 && mStorageManager != null) {
             if (searchType.equals(ExtendedListFragment.SearchType.SHARED_FILTER)) {
                 parseShares(objects);
             } else {
-                parseVirtuals(objects, searchType);
+                parseVirtuals(objects, searchType, clear);
             }
         }
 
@@ -586,7 +590,7 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         mStorageManager.saveShares(shares);
     }
 
-    private void parseVirtuals(ArrayList<Object> objects, ExtendedListFragment.SearchType searchType) {
+    private void parseVirtuals(ArrayList<Object> objects, ExtendedListFragment.SearchType searchType, boolean clear) {
         VirtualFolderType type;
         boolean onlyImages = false;
         switch (searchType) {
@@ -596,13 +600,16 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             case PHOTO_SEARCH:
                 type = VirtualFolderType.PHOTOS;
                 onlyImages = true;
+                lastTimestamp = ((RemoteFile) objects.get(objects.size() - 1)).getModifiedTimestamp() / 1000;
                 break;
             default:
                 type = VirtualFolderType.NONE;
                 break;
         }
 
-        mStorageManager.deleteVirtuals(type);
+        if (clear) {
+            mStorageManager.deleteVirtuals(type);
+        }
 
         ArrayList<ContentValues> contentValues = new ArrayList<>();
 
@@ -613,15 +620,15 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             try {
                 ocFile = mStorageManager.saveFileWithParent(ocFile, mContext);
 
-                if (!onlyImages || MimeTypeUtil.isImage(ocFile)) {
+                if ((!onlyImages || MimeTypeUtil.isImage(ocFile)) && !mFiles.contains(ocFile)) {
                     mFiles.add(ocFile);
+
+                    ContentValues cv = new ContentValues();
+                    cv.put(ProviderMeta.ProviderTableMeta.VIRTUAL_TYPE, type.toString());
+                    cv.put(ProviderMeta.ProviderTableMeta.VIRTUAL_OCFILE_ID, ocFile.getFileId());
+
+                    contentValues.add(cv);
                 }
-
-                ContentValues cv = new ContentValues();
-                cv.put(ProviderMeta.ProviderTableMeta.VIRTUAL_TYPE, type.toString());
-                cv.put(ProviderMeta.ProviderTableMeta.VIRTUAL_OCFILE_ID, ocFile.getFileId());
-
-                contentValues.add(cv);
             } catch (RemoteOperationFailedException e) {
                 Log_OC.e(TAG, "Error saving file with parent" + e.getMessage(), e);
             }
@@ -677,6 +684,14 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             mFilesFilter = new FilesFilter();
         }
         return mFilesFilter;
+    }
+
+    public void resetLastTimestamp() {
+        lastTimestamp = -1;
+    }
+
+    public long getLastTimestamp() {
+        return lastTimestamp;
     }
 
     private class FilesFilter extends Filter {

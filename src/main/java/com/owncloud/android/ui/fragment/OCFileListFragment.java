@@ -173,7 +173,7 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
     private boolean searchFragment = false;
     private SearchEvent searchEvent;
     private AsyncTask remoteOperationAsyncTask;
-    private AbsListView.OnScrollListener onScrollChangeListener;
+    private RecyclerView.OnScrollListener onScrollChangeListener;
     private boolean photoSearchQueryRunning;
     private boolean photoSearchNoNew = false;
     private RemoteOperation remoteOperation;
@@ -204,27 +204,6 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
         }
 
         searchFragment = currentSearchType != null;
-
-        onScrollChangeListener = new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                Log_OC.d("SCROLL", getListView().getFirstVisiblePosition() + " / " + mAdapter.getCount());
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                Log_OC.d("SCROLL", firstVisibleItem + " / " + totalItemCount);
-
-                if ((totalItemCount - visibleItemCount) <= (firstVisibleItem + 5)) {
-                    // Almost reached the end, continue to load new activities
-                    Log_OC.d("SCROLL", "load next");
-
-                    if ((totalItemCount - visibleItemCount) > 0) {
-                        search();
-                    }
-                }
-            }
-        };
 
         if (isGridViewPreferred(getCurrentFile())) {
             switchToGridView();
@@ -297,6 +276,29 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
         if (allowContextualActions) {
             setChoiceModeAsMultipleModal(savedInstanceState);
         }
+
+        onScrollChangeListener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (recyclerView.getLayoutManager() instanceof GridLayoutManager) {
+                    GridLayoutManager gridLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
+
+                    // scroll down
+                    if (dy > 0 && !photoSearchQueryRunning) {
+                        int visibleItemCount = gridLayoutManager.getChildCount();
+                        int totalItemCount = gridLayoutManager.getItemCount();
+                        int firstVisibleItem = gridLayoutManager.findFirstCompletelyVisibleItemPosition();
+
+                        if ((totalItemCount - visibleItemCount) <= (firstVisibleItem + 5)) {
+                            // Almost reached the end, continue to load new photos
+                            if ((totalItemCount - visibleItemCount) > 0) {
+                                searchAndDisplay();
+                            }
+                        }
+                    }
+                }
+            }
+        };
 
         Log_OC.i(TAG, "onCreateView() end");
         return v;
@@ -1433,6 +1435,7 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
 
         getActivity().getIntent().removeExtra(OCFileListFragment.SEARCH_EVENT);
         getArguments().putParcelable(OCFileListFragment.SEARCH_EVENT, null);
+        getRecyclerView().clearOnScrollListeners();
 
         setFabEnabled(true);
     }
@@ -1547,21 +1550,18 @@ public class OCFileListFragment extends ExtendedListFragment implements OCFileLi
             remoteOperation = new GetRemoteSharesOperation();
         }
 
-        search();
+        searchAndDisplay();
 
-        getListView().setOnScrollListener(onScrollChangeListener);
+        getRecyclerView().setOnScrollListener(onScrollChangeListener);
     }
 
-    // TODO refactor, can only used for photo search atm
-    private void search() {
+    private void searchAndDisplay() {
         if (!photoSearchQueryRunning && !photoSearchNoNew) {
             remoteOperationAsyncTask = new AsyncTask() {
                 @Override
                 protected Object doInBackground(Object[] params) {
                     if (getContext() != null && !isCancelled()) {
                         photoSearchQueryRunning = true;
-                        Log_OC.d("SCROLL", "re-run search");
-
                         final Account currentAccount = AccountUtils.getCurrentOwnCloudAccount(MainApp.getAppContext());
 
                         int limit = -1;
