@@ -8,7 +8,7 @@
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License version 2,
   as published by the Free Software Foundation.
-
+l
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -23,7 +23,7 @@
     	<item name="android:actionBarStyle">@style/Theme.ownCloud.Widget.ActionBar</item>
     	<item name="actionBarStyle">@style/Theme.ownCloud.Widget.ActionBar</item>
 		<item name="actionModeBackground">@color/action_mode_background</item>
-		<item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+		<item name="actionBarPopupTheme">@style/Theme.ownCloud.PopupTheme</item>
 		<item name="colorPrimary">@color/primary</item>
 		<item name="colorPrimaryDark">@color/primary_dark</item>
 		<item name="colorAccent">@color/color_accent</item>
@@ -31,13 +31,26 @@
 		<item name="alertDialogTheme">@style/ownCloud.AlertDialog</item>
 		<item name="android:windowBackground">@color/background_color</item>
 		<item name="searchViewStyle">@style/ownCloud.SearchView</item>
+		<item name="android:textColor">@color/textColor</item>
+		<item name="actionMenuTextColor">@color/textColor</item>
+		<item name="android:popupBackground">@color/background_color</item>
+        <item name="android:textColorPrimary">@color/textColor</item>
+        <item name="android:textColorSecondary">@color/secondaryTextColor</item>
+        <item name="android:keyTextColor"></item>
+        <item name="android:colorForeground">@color/textColor</item>
+        <item name="android:colorForegroundInverse">@color/textColor_inverse</item>
 	</style>
+
+    <style name="PreferenceStyle1" parent="">
+
+    </style>
 
 	<style name="FallbackThemingTheme" parent="Theme.MaterialComponents.Light.DarkActionBar.Bridge">
 		<item name="colorPrimary">#424242</item>
 		<item name="colorPrimaryDark">#212121</item>
 		<item name="colorAccent">#757575</item>
         <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/textColor</item>
 	</style>
 
 	<style name="FallbackDatePickerDialogTheme" parent="Theme.MaterialComponents.Light.Dialog">
@@ -77,7 +90,7 @@
 	<style name="Theme.ownCloud.noActionBar.Login" parent="Theme.ownCloud.Toolbar">
 		<item name="android:windowBackground">@color/primary</item>
 		<item name="colorControlNormal">@color/login_text_hint_color</item>
-		<item name="colorControlActivated">@color/white</item>
+		<item name="colorControlActivated">@color/login_asset</item>
 		<item name="colorControlHighlight">@color/login_text_hint_color</item>
 		<item name="colorAccent">@color/login_text_hint_color</item>
 		<item name="android:textColorHint">@color/login_text_hint_color</item>
@@ -127,7 +140,7 @@
 
     <style name="OutlineLogindButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="colorAccent">@color/transparent</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/textColor</item>
         <item name="android:textAllCaps">false</item>
         <item name="strokeColor">@color/white</item>
     </style>
@@ -138,8 +151,8 @@
 	</style>
 
 	<style name="Button.Login" parent="Button">
-		<item name="colorButtonNormal">@color/white</item>
-        <item name="colorAccent">@color/white</item>
+		<item name="colorButtonNormal">@color/textColor</item>
+        <item name="colorAccent">@color/textColor</item>
 		<item name="android:textColor">@color/primary_dark</item>
 	</style>
 
@@ -154,7 +167,7 @@
 	</style>
 
 	<style name="Button.Borderless.Login" parent="Widget.MaterialComponents.Button.TextButton">
-		<item name="android:textColor">@color/white</item>
+		<item name="android:textColor">@color/textColor</item>
         <item name="android:textAllCaps">false</item>
 	</style>
 
@@ -172,10 +185,17 @@
 	<style name="Theme.ownCloud.Overlay.ActionBar" parent="@style/Widget.MaterialComponents.Toolbar">
 		<item name="android:background">@color/color_transparent</item>
 		<item name="android:windowActionBarOverlay">true</item>
+        <item name="android:textColor">@color/textColor</item>
 		<!-- Support library compatibility -->
 		<item name="background">@color/color_transparent</item>
 		<item name="windowActionBarOverlay">true</item>
 	</style>
+
+    <style name="Theme.ownCloud.PopupTheme">
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:background">@color/background_color</item>
+        <item name="android:colorBackground">@color/background_color</item>
+    </style>
 
 	<!-- Launch screen -->
 	<style name="Theme.ownCloud.Launcher">
@@ -225,6 +245,10 @@
 	<style name="NavigationView_ItemTextAppearance">
 		<item name="android:ellipsize">end</item>
 		<item name="android:listDivider">@color/transparent</item>
+		<item name="android:textColor">@color/textColor</item>
+		<item name="android:color">@color/textColor</item>
+        <item name="android:background">@color/background_color</item>
+        <item name="background">@color/background_color</item>
 	</style>
 
 	<!-- Button Bar hack due to Lollipop bug:
@@ -261,6 +285,7 @@
 		<item name="android:maxLength">1</item>
 		<item name="android:password">true</item>
 		<item name="android:maxLines">1</item>
+		<item name="android:textCursorDrawable">@null</item>
     </style>
 
     <style name="Theme.ownCloud.NoActionBar">
@@ -274,10 +299,15 @@
 		<item name="android:textColor">#000000</item>
 	</style>
 	<style name="NextcloudTextAppearanceMedium" parent="@style/TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@color/textColor</item>
 	</style>
 
 	<style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
+	<!--<style name="EditText" parent="Theme.AppCompat.DayNight">-->
+		<!--<item name="colorControlActivated">@color/login_text_color</item>-->
+		<!--<item name="colorControlNormal">@color/login_text_color</item>-->
+		<!--<item name="android:textColorHint">@color/login_text_color</item>-->
 	</style>
 
 	<style name="AppTabTextAppearance" parent="@style/TextAppearance.Design.Tab">

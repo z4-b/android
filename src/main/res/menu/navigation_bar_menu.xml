@@ -3,7 +3,7 @@
     <item
         android:id="@+id/nav_bar_files"
         android:icon="@drawable/nav_all_files"
-        android:title="@string/drawer_item_all_files"/>
+        android:title="@string/drawer_item_all_files" />
     <item
         android:id="@+id/nav_bar_favorites"
         android:icon="@drawable/nav_favorites"
@@ -15,5 +15,5 @@
     <item
         android:id="@+id/nav_bar_settings"
         android:icon="@drawable/nav_settings"
-        android:title="@string/drawer_item_settings"/>
+        android:title="@string/drawer_item_settings" />
 </menu>

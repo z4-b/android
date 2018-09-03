@@ -66,6 +66,8 @@ public final class PreferenceManager {
     private static final String PREF__AUTO_UPLOAD_INIT = "autoUploadInit";
     private static final String PREF__FOLDER_SORT_ORDER = "folder_sort_order";
     private static final String PREF__FOLDER_LAYOUT = "folder_layout";
+
+    public static final String PREF__DARK_THEME = "darkTheme";
     public static final String PREF__LOCK_TIMESTAMP = "lock_timestamp";
     private static final String PREF__SHOW_MEDIA_SCAN_NOTIFICATIONS = "show_media_scan_notifications";
 
@@ -473,6 +475,10 @@ public final class PreferenceManager {
      */
     public static void setAutoUploadSplitEntries(Context context, boolean splitOut) {
         saveBooleanPreference(context, PREF__AUTO_UPLOAD_SPLIT_OUT, splitOut);
+    }
+
+    public static boolean getTheme(Context context) {
+        return getDefaultSharedPreferences(context).getBoolean(PREF__DARK_THEME, false);
     }
 
     /**

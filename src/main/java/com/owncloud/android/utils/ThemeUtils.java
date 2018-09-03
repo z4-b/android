@@ -111,6 +111,10 @@ public final class ThemeUtils {
     public static int primaryColor(Account account, boolean replaceWhite, Context context) {
         OCCapability capability = getCapability(account, context);
 
+        if (context==null) {
+            return 255;
+        }
+
         try {
             int color = Color.parseColor(capability.getServerColor());
             if (replaceWhite && Color.WHITE == color) {
@@ -340,7 +344,7 @@ public final class ThemeUtils {
      */
     public static void colorSnackbar(Context context, Snackbar snackbar) {
         // Changing action button text color
-        snackbar.setActionTextColor(ContextCompat.getColor(context, R.color.white));
+        snackbar.setActionTextColor(ContextCompat.getColor(context, R.color.textColor_inverse));
     }
 
     /**
