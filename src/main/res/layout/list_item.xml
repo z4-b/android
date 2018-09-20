@@ -177,7 +177,7 @@
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/ic_user"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
         <ImageView
             android:id="@+id/custom_checkbox"

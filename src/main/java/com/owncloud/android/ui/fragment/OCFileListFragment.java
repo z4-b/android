@@ -437,7 +437,7 @@ public class OCFileListFragment extends ExtendedListFragment implements
     public void showShareDetailView(OCFile file) {
         mContainerActivity.showDetails(file, 1);
     }
-    
+
     @Override
     public void onOverflowIconClicked(OCFile file, View view) {
         PopupMenu popup = new PopupMenu(getActivity(), view);

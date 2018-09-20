@@ -180,6 +180,7 @@ public final class FileStorageUtils {
         file.setPreviewAvailable(remote.hasPreview());
         file.setOwnerId(remote.getOwnerId());
         file.setOwnerDisplayName(remote.getOwnerDisplayName());
+        file.setNote(remote.getNote());
 
         return file;
     }

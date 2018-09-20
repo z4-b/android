@@ -98,6 +98,9 @@ public class OCFile implements Parcelable, Comparable<OCFile>, ServerFileInterfa
     @Getter @Setter private WebdavEntry.MountType mountType;
     @Getter
     @Setter
+    private String note;
+    @Getter
+    @Setter
     private String ownerId;
     @Getter
     @Setter
