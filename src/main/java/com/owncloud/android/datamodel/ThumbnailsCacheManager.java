@@ -71,6 +71,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -856,6 +857,16 @@ public final class ThumbnailsCacheManager {
             String avatarKey = "a_" + mUserId + "_" + mServerName + "_" + eTag;
 
             int px = getAvatarDimension();
+
+            boolean notOnSameServer = false;
+
+            if (notOnSameServer) {
+                try {
+                    return TextDrawable.createAvatar(mAccount.name, mAvatarRadius);
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+            }
 
             // Download avatar from server
             if (mClient != null) {

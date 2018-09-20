@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -81,7 +82,8 @@ import java.util.Vector;
 /**
  * This Adapter populates a RecyclerView with all files and folders in a Nextcloud instance.
  */
-public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+    implements DisplayUtils.AvatarGenerationListener {
 
     private static final int showFilenameColumnThreshold = 4;
     private final FileDownloader.FileDownloaderBinder downloaderBinder;
@@ -276,6 +278,21 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             if (holder instanceof OCFileListItemViewHolder) {
                 OCFileListItemViewHolder itemViewHolder = (OCFileListItemViewHolder) holder;
+
+                if (!TextUtils.isEmpty(file.getOwnerId()) && !mAccount.name.split("@")[0].equals(file.getOwnerId())) {
+
+                    Resources resources = mContext.getResources();
+                    itemViewHolder.sharedAvatar.setTag(file.getOwnerId());
+                    DisplayUtils.setAvatar(mAccount, file.getOwnerId(), this,
+                        resources.getDimension(R.dimen.list_item_avatar_icon_radius), resources,
+                        itemViewHolder.sharedAvatar, mContext);
+                    itemViewHolder.sharedAvatar.setVisibility(View.VISIBLE);
+
+                    itemViewHolder.sharedAvatar.setOnClickListener(view ->
+                        ocFileListFragmentInterface.showShareDetailView(file));
+                } else {
+                    itemViewHolder.sharedAvatar.setVisibility(View.GONE);
+                }
 
                 if (onlyOnDevice) {
                     File localFile = new File(file.getStoragePath());
@@ -489,7 +506,12 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             sharedIconView.setImageResource(R.drawable.ic_unshared);
             sharedIconView.setContentDescription(mContext.getString(R.string.shared_icon_share));
         }
-        sharedIconView.setOnClickListener(view -> ocFileListFragmentInterface.onShareIconClick(file));
+
+        if (!TextUtils.isEmpty(file.getOwnerId()) && !mAccount.name.split("@")[0].equals(file.getOwnerId())) { // TODO refactor
+            sharedIconView.setOnClickListener(view -> ocFileListFragmentInterface.showShareDetailView(file));
+        } else {
+            sharedIconView.setOnClickListener(view -> ocFileListFragmentInterface.onShareIconClick(file));
+        }
     }
 
     /**
@@ -694,6 +716,17 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return mFilesFilter;
     }
 
+    @Override
+    public void avatarGenerated(Drawable avatarDrawable, Object callContext) {
+        ((ImageView) callContext).setImageDrawable(avatarDrawable);
+    }
+
+    @Override
+    public boolean shouldCallGeneratedCallback(String tag, Object callContext) {
+//        return ((ImageView) callContext).getTag().equals(tag);
+        return false;
+    }
+
     private class FilesFilter extends Filter {
 
         @Override
@@ -791,6 +824,7 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         private final TextView fileSize;
         private final TextView lastModification;
         private final ImageView overflowMenu;
+        private final ImageView sharedAvatar;
 
         private OCFileListItemViewHolder(View itemView) {
             super(itemView);
@@ -798,6 +832,7 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             fileSize = itemView.findViewById(R.id.file_size);
             lastModification = itemView.findViewById(R.id.last_mod);
             overflowMenu = itemView.findViewById(R.id.overflow_menu);
+            sharedAvatar = itemView.findViewById(R.id.sharedAvatar);
         }
     }
 

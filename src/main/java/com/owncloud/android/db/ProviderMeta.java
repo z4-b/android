@@ -32,7 +32,7 @@ import com.owncloud.android.MainApp;
 public class ProviderMeta {
 
     public static final String DB_NAME = "filelist";
-    public static final int DB_VERSION = 39;
+    public static final int DB_VERSION = 40;
 
     private ProviderMeta() {
     }
@@ -104,6 +104,8 @@ public class ProviderMeta {
         public static final String FILE_IS_ENCRYPTED = "is_encrypted";
         public static final String FILE_MOUNT_TYPE = "mount_type";
         public static final String FILE_HAS_PREVIEW = "has_preview";
+        public static final String FILE_OWNER_ID = "owner_id";
+        public static final String FILE_OWNER_DISPLAY_NAME = "owner_display_name";
 
         public static final String [] FILE_ALL_COLUMNS = {_ID, FILE_PARENT, FILE_NAME
                , FILE_CREATION, FILE_MODIFIED,

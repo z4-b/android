@@ -24,6 +24,7 @@ import android.accounts.Account;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -73,10 +74,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class FileDetailSharingFragment extends Fragment implements UserListAdapter.ShareeListAdapterListener {
+public class FileDetailSharingFragment extends Fragment implements UserListAdapter.ShareeListAdapterListener,
+    DisplayUtils.AvatarGenerationListener {
 
     private static final String ARG_FILE = "FILE";
     private static final String ARG_ACCOUNT = "ACCOUNT";
+    private static final String TAG = FileDetailSharingFragment.class.getSimpleName();
 
     // to show share with users/groups info
     private List<OCShare> shares;
@@ -85,6 +88,10 @@ public class FileDetailSharingFragment extends Fragment implements UserListAdapt
     private Account account;
     private OCCapability capabilities;
     private OCShare publicShare;
+
+    private FileOperationsHelper fileOperationsHelper;
+    private FileDisplayActivity fileDisplayActivity;
+    private FileDataStorageManager fileDataStorageManager;
 
     private Unbinder unbinder;
 
@@ -112,9 +119,14 @@ public class FileDetailSharingFragment extends Fragment implements UserListAdapt
     @BindView(R.id.share_by_link_container)
     LinearLayout shareByLinkContainer;
 
-    private FileOperationsHelper fileOperationsHelper;
-    private FileDisplayActivity fileDisplayActivity;
-    private FileDataStorageManager fileDataStorageManager;
+    @BindView(R.id.shared_with_you_container)
+    LinearLayout sharedWithYouContainer;
+
+    @BindView(R.id.shared_with_you_avatar)
+    ImageView sharedWithYouAvatar;
+
+    @BindView(R.id.shared_with_you_username)
+    TextView sharedWithYouUsername;
 
     public static FileDetailSharingFragment newInstance(OCFile file, Account account) {
         FileDetailSharingFragment fragment = new FileDetailSharingFragment();
@@ -194,6 +206,7 @@ public class FileDetailSharingFragment extends Fragment implements UserListAdapt
     private void setupView() {
         setShareByLinkInfo(file.isSharedViaLink());
         setShareWithUserInfo();
+        setShareWithYou();
         FileDetailSharingFragmentHelper.setupSearchView(
             (SearchManager) fileDisplayActivity.getSystemService(Context.SEARCH_SERVICE), searchView,
             fileDisplayActivity.getComponentName());
@@ -240,6 +253,20 @@ public class FileDetailSharingFragment extends Fragment implements UserListAdapt
 
         // Update list of users/groups
         updateListOfUserGroups();
+    }
+
+    private void setShareWithYou() {
+        if (!TextUtils.isEmpty(file.getOwnerId()) && !account.name.split("@")[0].equals(file.getOwnerId())) {
+            sharedWithYouUsername.setText(
+                String.format(getString(R.string.shared_with_you_by), file.getOwnerDisplayName()));
+
+            DisplayUtils.setAvatar(account, file.getOwnerId(), this, getResources().getDimension(
+                R.dimen.file_list_item_avatar_icon_radius), getResources(), sharedWithYouAvatar,
+                getContext());
+            sharedWithYouAvatar.setVisibility(View.VISIBLE);
+        } else {
+            sharedWithYouContainer.setVisibility(View.GONE);
+        }
     }
 
     private void updateListOfUserGroups() {
@@ -541,5 +568,15 @@ public class FileDetailSharingFragment extends Fragment implements UserListAdapt
 
         outState.putParcelable(FileActivity.EXTRA_FILE, file);
         outState.putParcelable(FileActivity.EXTRA_ACCOUNT, account);
+    }
+
+    @Override
+    public void avatarGenerated(Drawable avatarDrawable, Object callContext) {
+        sharedWithYouAvatar.setImageDrawable(avatarDrawable);
+    }
+
+    @Override
+    public boolean shouldCallGeneratedCallback(String tag, Object callContext) {
+        return false;
     }
 }

@@ -178,6 +178,8 @@ public final class FileStorageUtils {
         }
         file.setMountType(remote.getMountType());
         file.setPreviewAvailable(remote.hasPreview());
+        file.setOwnerId(remote.getOwnerId());
+        file.setOwnerDisplayName(remote.getOwnerDisplayName());
 
         return file;
     }

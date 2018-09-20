@@ -434,6 +434,11 @@ public class OCFileListFragment extends ExtendedListFragment implements
     }
 
     @Override
+    public void showShareDetailView(OCFile file) {
+        mContainerActivity.showDetails(file, 1);
+    }
+    
+    @Override
     public void onOverflowIconClicked(OCFile file, View view) {
         PopupMenu popup = new PopupMenu(getActivity(), view);
         popup.inflate(R.menu.file_actions_menu);
