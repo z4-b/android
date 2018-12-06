@@ -723,8 +723,7 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public boolean shouldCallGeneratedCallback(String tag, Object callContext) {
-//        return ((ImageView) callContext).getTag().equals(tag);
-        return false;
+        return ((ImageView) callContext).getTag().equals(tag);
     }
 
     private class FilesFilter extends Filter {

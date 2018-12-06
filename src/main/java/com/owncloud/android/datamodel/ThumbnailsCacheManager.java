@@ -37,7 +37,6 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.MenuItem;
@@ -65,13 +64,13 @@ import com.owncloud.android.utils.MimeTypeUtil;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -845,7 +844,7 @@ public final class ThumbnailsCacheManager {
             return Math.round(r.getDimension(R.dimen.file_avatar_size));
         }
 
-        private @Nullable
+        private @NotNull
         Drawable doAvatarInBackground() {
             Bitmap avatar = null;
 
@@ -857,16 +856,6 @@ public final class ThumbnailsCacheManager {
             String avatarKey = "a_" + mUserId + "_" + mServerName + "_" + eTag;
 
             int px = getAvatarDimension();
-
-            boolean notOnSameServer = false;
-
-            if (notOnSameServer) {
-                try {
-                    return TextDrawable.createAvatar(mAccount.name, mAvatarRadius);
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
-            }
 
             // Download avatar from server
             if (mClient != null) {
@@ -920,7 +909,6 @@ public final class ThumbnailsCacheManager {
                             // everything else
                             mClient.exhaustResponse(get.getResponseBodyAsStream());
                             break;
-
                     }
                 } catch (Exception e) {
                     try {
@@ -933,15 +921,17 @@ public final class ThumbnailsCacheManager {
                         get.releaseConnection();
                     }
                 }
-
-                try {
-                    return TextDrawable.createAvatar(mAccount.name, mAvatarRadius);
-                } catch (Exception e) {
-                    Log_OC.e(TAG, "Error generating fallback avatar");
-                }
             }
 
-            return BitmapUtils.bitmapToCircularBitmapDrawable(mResources, avatar);
+            if (avatar == null) {
+                try {
+                    return TextDrawable.createAvatar(mAccount.name, mAvatarRadius);
+                } catch (Exception e1) {
+                    return mResources.getDrawable(R.drawable.ic_user);
+                }
+            } else {
+                return BitmapUtils.bitmapToCircularBitmapDrawable(mResources, avatar);
+            }
         }
     }
 
