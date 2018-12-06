@@ -507,7 +507,6 @@
     <string name="share_room_clarification">%1$s (conversation)</string>
     <string name="share_known_remote_clarification">%1$s ( at %2$s )</string>
 
-    <string name="share_sharee_unavailable">Upgrade the server version to allow sharing between users from within their clients.\nPlease contact your admin</string>
     <string name="share_privilege_unshare">Unshare</string>
     <string name="share_privilege_can_share">can share</string>
     <string name="share_privilege_can_edit">can edit</string>
@@ -842,5 +841,4 @@
     <string name="error_retrieving_templates">Error retrieving templates</string>
     <string name="shared_avatar_desc">Avatar from shared user</string>
     <string name="shared_with_you_by">Shared with you by %1$s</string>
-    <string name="note_empty">Note is empty</string>
 </resources>
