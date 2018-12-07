@@ -46,6 +46,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.owncloud.android.R;
+import com.owncloud.android.authentication.AccountUtils;
 import com.owncloud.android.datamodel.FileDataStorageManager;
 import com.owncloud.android.datamodel.OCFile;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -79,7 +80,6 @@ public class FileDetailSharingFragment extends Fragment implements UserListAdapt
 
     private static final String ARG_FILE = "FILE";
     private static final String ARG_ACCOUNT = "ACCOUNT";
-    private static final String TAG = FileDetailSharingFragment.class.getSimpleName();
 
     // to show share with users/groups info
     private List<OCShare> shares;
@@ -256,7 +256,9 @@ public class FileDetailSharingFragment extends Fragment implements UserListAdapt
     }
 
     private void setShareWithYou() {
-        if (!TextUtils.isEmpty(file.getOwnerId()) && !account.name.split("@")[0].equals(file.getOwnerId())) {
+        if (AccountUtils.accountOwnsFile(file, account)) {
+            sharedWithYouContainer.setVisibility(View.GONE);
+        } else {
             sharedWithYouUsername.setText(
                 String.format(getString(R.string.shared_with_you_by), file.getOwnerDisplayName()));
 
@@ -264,8 +266,6 @@ public class FileDetailSharingFragment extends Fragment implements UserListAdapt
                 R.dimen.file_list_item_avatar_icon_radius), getResources(), sharedWithYouAvatar,
                 getContext());
             sharedWithYouAvatar.setVisibility(View.VISIBLE);
-        } else {
-            sharedWithYouContainer.setVisibility(View.GONE);
         }
     }
 

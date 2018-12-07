@@ -79,6 +79,9 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.Vector;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * This Adapter populates a RecyclerView with all files and folders in a Nextcloud instance.
  */
@@ -279,8 +282,9 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             if (holder instanceof OCFileListItemViewHolder) {
                 OCFileListItemViewHolder itemViewHolder = (OCFileListItemViewHolder) holder;
 
-                if (!TextUtils.isEmpty(file.getOwnerId()) && !mAccount.name.split("@")[0].equals(file.getOwnerId())) {
-
+                if (AccountUtils.accountOwnsFile(file, mAccount)) {
+                    itemViewHolder.sharedAvatar.setVisibility(View.GONE);
+                } else {
                     Resources resources = mContext.getResources();
                     itemViewHolder.sharedAvatar.setTag(file.getOwnerId());
                     DisplayUtils.setAvatar(mAccount, file.getOwnerId(), this,
@@ -290,8 +294,6 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                     itemViewHolder.sharedAvatar.setOnClickListener(view ->
                         ocFileListFragmentInterface.showShareDetailView(file));
-                } else {
-                    itemViewHolder.sharedAvatar.setVisibility(View.GONE);
                 }
 
                 if (onlyOnDevice) {
@@ -507,10 +509,10 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             sharedIconView.setContentDescription(mContext.getString(R.string.shared_icon_share));
         }
 
-        if (!TextUtils.isEmpty(file.getOwnerId()) && !mAccount.name.split("@")[0].equals(file.getOwnerId())) { // TODO refactor
-            sharedIconView.setOnClickListener(view -> ocFileListFragmentInterface.showShareDetailView(file));
-        } else {
+        if (AccountUtils.accountOwnsFile(file, mAccount)) {
             sharedIconView.setOnClickListener(view -> ocFileListFragmentInterface.onShareIconClick(file));
+        } else {
+            sharedIconView.setOnClickListener(view -> ocFileListFragmentInterface.showShareDetailView(file));
         }
     }
 
@@ -820,60 +822,68 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private static class OCFileListItemViewHolder extends OCFileListGridItemViewHolder {
-        private final TextView fileSize;
-        private final TextView lastModification;
-        private final ImageView overflowMenu;
-        private final ImageView sharedAvatar;
+        @BindView(R.id.file_size)
+        public TextView fileSize;
+
+        @BindView(R.id.last_mod)
+        public TextView lastModification;
+
+        @BindView(R.id.overflow_menu)
+        public ImageView overflowMenu;
+
+        @BindView(R.id.sharedAvatar)
+        public ImageView sharedAvatar;
 
         private OCFileListItemViewHolder(View itemView) {
             super(itemView);
-
-            fileSize = itemView.findViewById(R.id.file_size);
-            lastModification = itemView.findViewById(R.id.last_mod);
-            overflowMenu = itemView.findViewById(R.id.overflow_menu);
-            sharedAvatar = itemView.findViewById(R.id.sharedAvatar);
+            ButterKnife.bind(this, itemView);
         }
     }
 
-    static class OCFileListGridItemViewHolder extends OCFileListGridImageViewHolder {
-        private final TextView fileName;
+    private static class OCFileListGridItemViewHolder extends OCFileListGridImageViewHolder {
+        @BindView(R.id.Filename) public TextView fileName;
 
         private OCFileListGridItemViewHolder(View itemView) {
             super(itemView);
-
-            fileName = itemView.findViewById(R.id.Filename);
+            ButterKnife.bind(this, itemView);
         }
     }
 
-    static class OCFileListGridImageViewHolder extends RecyclerView.ViewHolder {
-        private final ImageView thumbnail;
-        private final ImageView favorite;
-        private final ImageView offlineIcon;
-        private final ImageView localFileIndicator;
-        private final ImageView shared;
-        private final ImageView checkbox;
-        private final LinearLayout itemLayout;
+    private static class OCFileListGridImageViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.thumbnail)
+        public ImageView thumbnail;
+
+        @BindView(R.id.favorite_action)
+        public ImageView favorite;
+
+        @BindView(R.id.keptOfflineIcon)
+        public ImageView offlineIcon;
+
+        @BindView(R.id.localFileIndicator)
+        public ImageView localFileIndicator;
+
+        @BindView(R.id.sharedIcon)
+        public ImageView shared;
+
+        @BindView(R.id.custom_checkbox)
+        public ImageView checkbox;
+
+        @BindView(R.id.ListItemLayout)
+        public LinearLayout itemLayout;
 
         private OCFileListGridImageViewHolder(View itemView) {
             super(itemView);
-
-            thumbnail = itemView.findViewById(R.id.thumbnail);
-            favorite = itemView.findViewById(R.id.favorite_action);
-            offlineIcon = itemView.findViewById(R.id.keptOfflineIcon);
-            localFileIndicator = itemView.findViewById(R.id.localFileIndicator);
-            shared = itemView.findViewById(R.id.sharedIcon);
-            checkbox = itemView.findViewById(R.id.custom_checkbox);
-            itemLayout = itemView.findViewById(R.id.ListItemLayout);
+            ButterKnife.bind(this, itemView);
         }
     }
 
     private static class OCFileListFooterViewHolder extends RecyclerView.ViewHolder {
-        private final TextView footerText;
+        @BindView(R.id.footerText)
+        public TextView footerText;
 
         private OCFileListFooterViewHolder(View itemView) {
             super(itemView);
-
-            footerText = itemView.findViewById(R.id.footerText);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

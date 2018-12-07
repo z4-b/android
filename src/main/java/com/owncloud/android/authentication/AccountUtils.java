@@ -26,9 +26,11 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.owncloud.android.MainApp;
 import com.owncloud.android.datamodel.ArbitraryDataProvider;
+import com.owncloud.android.datamodel.OCFile;
 import com.owncloud.android.lib.common.accounts.AccountUtils.Constants;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 import com.owncloud.android.ui.activity.ManageAccountsActivity;
@@ -198,5 +200,15 @@ public final class AccountUtils {
 
     public static boolean hasSearchSupport(Account account) {
         return getServerVersion(account).isSearchSupported();
+    }
+
+    /**
+     * Checks if an account owns the file (file's ownerId is the same as account name)
+     * @param file File to check
+     * @param account account to compare
+     * @return false if ownerId is not set or owner is a different account
+     */
+    public static boolean accountOwnsFile(OCFile file, Account account) {
+        return !TextUtils.isEmpty(file.getOwnerId()) && account.name.split("@")[0].equals(file.getOwnerId());
     }
 }
