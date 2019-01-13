@@ -45,18 +45,22 @@
                 android:paddingTop="@dimen/standard_padding"
                 android:paddingRight="@dimen/standard_padding"
                 android:paddingBottom="@dimen/standard_padding">
-                android:layout_weight="1"
-                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/filename"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:ellipsize="middle"
-                    android:text="@string/placeholder_filename"
-                    android:textColor="@color/textColor"
-                    android:textStyle="bold"
-                    android:textSize="20sp" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/filename"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="middle"
+                        android:text="@string/placeholder_filename"
+                        android:textColor="@color/textColor"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:id="@+id/filedetails"
@@ -125,13 +129,14 @@
 
                 </LinearLayout>
 
-            <ImageView
-                android:id="@+id/overflow_menu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/background_color"
-                android:src="@drawable/ic_dots_vertical"
-                android:contentDescription="@string/overflow_menu"/>
+                <ImageView
+                    android:id="@+id/overflow_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/background_color"
+                    android:contentDescription="@string/overflow_menu"
+                    android:src="@drawable/ic_dots_vertical" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/progressBlock"
@@ -176,19 +181,21 @@
 
                 </LinearLayout>
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabGravity="center"
-            app:tabMode="fixed"
-            app:tabTextAppearance="@style/AppTabTextAppearance"
-            android:background="@color/background_color" />
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/list_divider_background" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background_color"
+                app:tabGravity="center"
+                app:tabMode="fixed"
+                app:tabTextAppearance="@style/AppTabTextAppearance" />
 
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/pager"

@@ -33,10 +33,4 @@
     <style name="Theme.ownCloud.Toolbar.Drawer">
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
-
-    <style name="NavigationView_ItemTextAppearance">
-        <item name="android:textColor">@color/textColor</item>
-        <item name="android:color">@color/textColor</item>
-    </style>
-
 </resources>
