@@ -195,6 +195,7 @@
                 android:background="@color/background_color"
                 app:tabGravity="center"
                 app:tabMode="fixed"
+                app:tabTextColor="@color/textColor"
                 app:tabTextAppearance="@style/AppTabTextAppearance" />
 
             <androidx.viewpager.widget.ViewPager
