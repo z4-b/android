@@ -65,6 +65,7 @@ import androidx.fragment.app.FragmentActivity;
  * Utility class with methods for client side theming.
  */
 public final class ThemeUtils {
+    private static final int LIGHTNESS = 2;
 
     private ThemeUtils() {
         // utility class -> private constructor
@@ -184,7 +185,7 @@ public final class ThemeUtils {
         int primaryColor = primaryColor(context);
         float[] hsl = colorToHSL(primaryColor);
 
-        return hsl[2] <= 0.55;
+        return hsl[LIGHTNESS] <= 0.55;
     }
 
     /**
@@ -260,9 +261,9 @@ public final class ThemeUtils {
         float[] hsl = colorToHSL(color);
 
         if (threshold == -1f) {
-            hsl[2] += lightnessDelta;
+            hsl[LIGHTNESS] += lightnessDelta;
         } else {
-            hsl[2] = Math.min(hsl[2] + lightnessDelta, threshold);
+            hsl[LIGHTNESS] = Math.min(hsl[LIGHTNESS] + lightnessDelta, threshold);
         }
 
         return ColorUtils.HSLToColor(hsl);
