@@ -176,7 +176,7 @@ public class UploadFilesActivity extends FileActivity implements
         mCancelButton.setOnClickListener(this);
 
         mUploadBtn = findViewById(R.id.upload_files_btn_upload);
-        mUploadBtn.getBackground().setColorFilter(ThemeUtils.primaryColor(this, true), PorterDuff.Mode.SRC_ATOP);
+        mUploadBtn.setBackgroundColor(ThemeUtils.primaryColor(this,true));
         mUploadBtn.setOnClickListener(this);
 
         int localBehaviour = PreferenceManager.getUploaderBehaviour(this);
