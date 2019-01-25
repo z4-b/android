@@ -78,7 +78,7 @@
 		<item name="buttonBarStyle">@style/Theme.ownCloud.Dialog.ButtonBar</item>
 	</style>
 
-	<!-- seperate action bar style for activities without an action bar -->
+	<!-- separate action bar style for activities without an action bar -->
 	<style name="Theme.ownCloud.Toolbar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 		<item name="windowNoTitle">true</item>
 		<item name="windowActionBar">false</item>
