@@ -25,5 +25,8 @@
         <item
             android:id="@+id/action_create_custom_folder"
             android:title="@string/autoupload_custom_folder"/>
+        <item
+            android:id="@+id/action_edit_blacklist_patterns"
+            android:title="@string/autoupload_blacklist_pattern"/>
     </group>
 </menu>
