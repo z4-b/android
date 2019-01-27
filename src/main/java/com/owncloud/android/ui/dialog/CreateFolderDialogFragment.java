@@ -98,6 +98,7 @@ public class CreateFolderDialogFragment
         inputText.setText("");
         inputText.requestFocus();
         inputText.getBackground().setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
+        inputText.setHighlightColor(ThemeUtils.primaryColor(getActivity()));
 
         // Build the dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
