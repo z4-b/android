@@ -20,6 +20,7 @@
 package com.owncloud.android.ui.adapter;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
@@ -31,6 +32,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -146,17 +148,23 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationLi
                                                       PorterDuff.Mode.SRC_ATOP);
                 button.setTextColor(ThemeUtils.fontColor(notificationsActivity));
             } else {
-                button.getBackground().setColorFilter(notificationsActivity.getResources().getColor(R.color.white),
+
+                button.setStrokeColor(ColorStateList.valueOf(notificationsActivity.getResources().getColor(R.color.black)));
+                button.setStrokeWidth(5);
+
+                button.getBackground().setColorFilter(notificationsActivity.getResources().getColor(R.color.transparent),
                                                       PorterDuff.Mode.SRC_ATOP);
             }
 
             button.setText(action.label);
             button.setCornerRadiusResource(R.dimen.button_corner_radius);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                                                                             ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(10, 10, 10, 10);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 120);
+            params.setMargins(20, 20, 20, 20);
             button.setLayoutParams(params);
+            button.setGravity(Gravity.CENTER);
+
+            button.setPadding(5, 5, 5, 5);
 
             button.setOnClickListener(v -> {
                 setButtonEnabled(holder, false);
