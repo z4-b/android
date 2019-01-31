@@ -140,14 +140,23 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationLi
 
         for (Action action : notification.getActions()) {
             button = new MaterialButton(notificationsActivity);
+
+            if (action.primary) {
+                button.getBackground().setColorFilter(ThemeUtils.primaryColor(notificationsActivity),
+                                                      PorterDuff.Mode.SRC_ATOP);
+                button.setTextColor(ThemeUtils.fontColor(notificationsActivity));
+            } else {
+                button.getBackground().setColorFilter(notificationsActivity.getResources().getColor(R.color.white),
+                                                      PorterDuff.Mode.SRC_ATOP);
+            }
+
             button.setText(action.label);
             button.setCornerRadiusResource(R.dimen.button_corner_radius);
 
-            if (action.primary) {
-                button.getBackground().setColorFilter(ThemeUtils.primaryColor(notificationsActivity, true),
-                        PorterDuff.Mode.SRC_ATOP);
-                button.setTextColor(ThemeUtils.fontColor(notificationsActivity));
-            }
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                                             ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(10, 10, 10, 10);
+            button.setLayoutParams(params);
 
             button.setOnClickListener(v -> {
                 setButtonEnabled(holder, false);
